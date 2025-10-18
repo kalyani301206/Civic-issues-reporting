@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Connect</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #3CB371;
+            --accent-color: #20B2AA;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --danger-color: #f44336;
+            --success-color: #4CAF50;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
+            --border-radius: 12px;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        /* Theme Variables */
+        body.light-theme {
+            background: linear-gradient(135deg, #e0f7e9 0%, #c8e6c9 100%);
+            --primary-color: #2E8B57;
+            --secondary-color: #3CB371;
+            --accent-color: #20B2AA;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #333;
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --nav-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a3c27 0%, #2d5a3d 100%);
+            --primary-color: #4CAF50;
+            --secondary-color: #66BB6A;
+            --accent-color: #26A69A;
+            --card-bg: rgba(51, 51, 51, 0.8);
+            --text-color: #f0f0f0;
+            --input-bg: rgba(68, 68, 68, 0.8);
+            --nav-bg: rgba(51, 51, 51, 0.95);
+            color: var(--text-color);
+        }
+
+        .app {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 70px;
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 800px;
+            transition: var(--transition);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            height: 70px;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-item {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(46, 139, 87, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Progress Stats */
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            margin: 0 5px;
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Photo Options */
+        .photo-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .photo-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-btn i {
+            margin-right: 5px;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .audio-preview {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: var(--border-radius);
+        }
+
+        /* Voice Recording */
+        .voice-recording {
+            margin-top: 15px;
+        }
+
+        .record-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(135deg, #FF4757, #FF6B6B);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .waveform {
+            height: 40px;
+            margin-top: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wave-bar {
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            margin: 0 2px;
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.5); }
+        }
+
+        .recording-time {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #777;
+            display: none;
+        }
+
+        .dark-theme .recording-time {
+            color: #ccc;
+        }
+
+        /* Thank You Message */
+        .thank-you-message {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--success-color), var(--accent-color));
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .reference-id {
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Error/Success Messages */
+        .error-message {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .phone-error {
+            color: var(--danger-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .dark-theme .footer {
+            color: #aaa;
+        }
+
+        /* Background Animation */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(46, 139, 87, 0.3);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); }
+            25% { transform: translateY(-20px) translateX(20px) rotate(90deg); }
+            50% { transform: translateY(0) translateX(40px) rotate(180deg); }
+            75% { transform: translateY(20px) translateX(20px) rotate(270deg); }
+            100% { transform: translateY(0) translateX(0) rotate(360deg); }
+        }
+
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .language-option {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .language-option:hover {
+            transform: translateY(-2px);
+        }
+
+        .language-option.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .dark-theme .language-option {
+            background: rgba(68, 68, 68, 0.7);
+            color: white;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .profile-info {
+            text-align: center;
+            width: 100%;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .profile-detail {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        /* Location Detection */
+        .location-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .location-loading {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ff9800;
+        }
+
+        .location-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .location-error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .nav-items {
+                gap: 5px;
+            }
+            
+            .nav-item {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            
+            .progress-stats {
+                flex-direction: column;
+            }
+            
+            .stat-box {
+                margin: 5px 0;
+            }
+            
+            .container {
+                padding-top: 70px;
+            }
+            
+            .theme-toggle,
+            .language-selector {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Language translations
+        const translations = {
+            en: {
+                // Login Page
+                loginTitle: "Clean Connect",
+                loginSubtitle: "Login to Your Account",
+                email: "Email",
+                enterEmail: "Enter your email",
+                password: "Password",
+                enterPassword: "Enter your password",
+                login: "Login",
+                noAccount: "Don't have an account?",
+                createAccount: "Create New Account",
+                invalidCredentials: "Invalid email or password",
+                
+                // Register Page
+                registerTitle: "Create New Account",
+                firstName: "First Name",
+                enterFirstName: "Enter your first name",
+                lastName: "Last Name",
+                enterLastName: "Enter your last name",
+                confirmPassword: "Confirm Password",
+                confirmPasswordPlaceholder: "Confirm your password",
+                phone: "Phone Number",
+                enterPhone: "Enter your phone number",
+                submit: "Submit",
+                haveAccount: "Already have an account?",
+                loginLink: "Login",
+                passwordsMatch: "Passwords match!",
+                passwordsNotMatch: "Passwords do not match",
+                invalidPhone: "Please enter a valid 10-digit phone number",
+                userExists: "User with this email already exists",
+                accountCreated: "Account created successfully! Redirecting to login...",
+                
+                // Home Page
+                homeTitle: "Welcome to Clean Connect",
+                homeSubtitle: "Select an option from the navigation menu to get started.",
+                issuesRegistered: "Issues Registered",
+                inProgress: "In Progress",
+                issuesSolved: "Issues Solved",
+                
+                // Navigation
+                home: "Home",
+                reportIssue: "Report Issue",
+                myReports: "My Reports",
+                rewards: "Rewards",
+                profile: "Profile",
+                settings: "Settings",
+                logout: "Logout",
+                
+                // Report Page
+                reportTitle: "Report an Issue",
+                uploadPhoto: "Upload Problem Photo",
+                openCamera: "Open Camera",
+                chooseFile: "Choose File",
+                description: "Description",
+                describeIssue: "Describe the issue",
+                recordVoice: "Record Voice Description",
+                stopRecording: "Stop Recording",
+                location: "Location",
+                detectLocation: "Detect Location Automatically",
+                submitIssue: "Submit Issue",
+                descriptionRequired: "Description is required",
+                locationRequired: "Location is required",
+                photoPreview: "Photo Preview",
+                audioPreview: "Audio Preview",
+                detectingLocation: "Detecting your location...",
+                locationDetected: "Location detected successfully!",
+                locationFailed: "Location detection failed. Please enter manually.",
+                locationPermission: "Please allow location access to detect automatically",
+                
+                // Thank You Page
+                thankYou: "Thank You for Reporting!",
+                issueRegistered: "Your issue has been registered successfully. Our team will look into it shortly.",
+                quote: "Every report is a step toward a better world.",
+                referenceId: "Reference ID",
+                returnHome: "Return to Home Page",
+                
+                // My Reports Page
+                myReportsTitle: "My Reports",
+                noReports: "No reports submitted yet.",
+                date: "Date",
+                status: "Status",
+                
+                // Rewards Page
+                rewardsTitle: "Your Rewards",
+                currentLevel: "Current Level",
+                points: "Points",
+                nextLevel: "Next Level",
+                badgesEarned: "Badges Earned",
+                firstReport: "First Report",
+                fiveReports: "5 Reports",
+                
+                // Profile Page
+                profileTitle: "User Profile",
+                name: "Name",
+                email: "Email",
+                phone: "Phone",
+                
+                // Settings Page
+                settingsTitle: "Settings",
+                language: "Language",
+                chooseLanguage: "Choose Language",
+                notifications: "Notifications",
+                enableNotifications: "Enable Notifications",
+                appearance: "Appearance",
+                darkMode: "Dark Mode"
+            },
+            te: {
+                // Login Page
+                loginTitle: "క్లీన్ కనెక్ట్",
+                loginSubtitle: "మీ ఖాతాకు లాగిన్ చేయండి",
+                email: "ఇమెయిల్",
+                enterEmail: "మీ ఇమెయిల్ నమోదు చేయండి",
+                password: "పాస్వర్డ్",
+                enterPassword: "మీ పాస్వర్డ్ నమోదు చేయండి",
+                login: "లాగిన్",
+                noAccount: "ఖాతా లేదా?",
+                createAccount: "కొత్త ఖాతా సృష్టించండి",
+                invalidCredentials: "చెల్లని ఇమెయిల్ లేదా పాస్వర్డ్",
+                
+                // Register Page
+                registerTitle: "కొత్త ఖాతా సృష్టించండి",
+                firstName: "పేరు",
+                enterFirstName: "మీ పేరు నమోదు చేయండి",
+                lastName: "చివరి పేరు",
+                enterLastName: "మీ చివరి పేరు నమోదు చేయండి",
+                confirmPassword: "పాస్వర్డ్ నిర్ధారించండి",
+                confirmPasswordPlaceholder: "మీ పాస్వర్డ్ నిర్ధారించండి",
+                phone: "ఫోన్ నంబర్",
+                enterPhone: "మీ ఫోన్ నంబర్ నమోదు చేయండి",
+                submit: "సమర్పించండి",
+                haveAccount: "ఇప్పటికే ఖాతా ఉందా?",
+                loginLink: "లాగిన్",
+                passwordsMatch: "పాస్వర్డ్లు సరిపోలాయి!",
+                passwordsNotMatch: "పాస్వర్డ్లు సరిపోలడం లేదు",
+                invalidPhone: "దయచేసి చెల్లుబాటు అయ్యే 10-అంకెల ఫోన్ నంబర్ నమోదు చేయండి",
+                userExists: "ఈ ఇమెయిల్తో వినియోగదారు ఇప్పటికే ఉన్నారు",
+                accountCreated: "ఖాతా విజయవంతంగా సృష్టించబడింది! లాగిన్ కు మళ్లించబడుతోంది...",
+                
+                // Home Page
+                homeTitle: "క్లీన్ కనెక్ట్ కు స్వాగతం",
+                homeSubtitle: "ప్రారంభించడానికి నావిగేషన్ మెనూ నుండి ఒక ఎంపికను ఎంచుకోండి.",
+                issuesRegistered: "నమోదు చేసిన సమస్యలు",
+                inProgress: "పురోగతిలో ఉంది",
+                issuesSolved: "పరిష్కరించబడిన సమస్యలు",
+                
+                // Navigation
+                home: "హోమ్",
+                reportIssue: "సమస్యను నివేదించండి",
+                myReports: "నా నివేదికలు",
+                rewards: "రివార్డ్లు",
+                profile: "ప్రొఫైల్",
+                settings: "సెట్టింగ్లు",
+                logout: "లాగౌట్",
+                
+                // Report Page
+                reportTitle: "సమస్యను నివేదించండి",
+                uploadPhoto: "సమస్య ఫోటోను అప్లోడ్ చేయండి",
+                openCamera: "కెమెరా తెరవండి",
+                chooseFile: "ఫైల్ ఎంచుకోండి",
+                description: "వివరణ",
+                describeIssue: "సమస్యను వివరించండి",
+                recordVoice: "వాయిస్ వివరణను రికార్డ్ చేయండి",
+                stopRecording: "రికార్డింగ్ ఆపండి",
+                location: "స్థానం",
+                detectLocation: "స్థానాన్ని స్వయంచాలకంగా గుర్తించండి",
+                submitIssue: "సమస్యను సమర్పించండి",
+                descriptionRequired: "వివరణ అవసరం",
+                locationRequired: "స్థానం అవసరం",
+                photoPreview: "ఫోటో ప్రివ్యూ",
+                audioPreview: "ఆడియో ప్రివ్యూ",
+                detectingLocation: "మీ స్థానాన్ని గుర్తిస్తున్నాము...",
+                locationDetected: "స్థానం విజయవంతంగా గుర్తించబడింది!",
+                locationFailed: "స్థానం గుర్తింపు విఫలమైంది. దయచేసి మానవీయంగా నమోదు చేయండి.",
+                locationPermission: "స్వయంచాలకంగా గుర్తించడానికి దయచేసి స్థానం ప్రాప్యతను అనుమతించండి",
+                
+                // Thank You Page
+                thankYou: "నివేదించినందుకు ధన్యవాదాలు!",
+                issueRegistered: "మీ సమస్య విజయవంతంగా నమోదు చేయబడింది. మా బృందం దానిని త్వరలో పరిశీలిస్తుంది.",
+                quote: "ప్రతి నివేదిక మెరుగైన ప్రపంచం వైపు ఒక అడుగు.",
+                referenceId: "రిఫరెన్స్ ఐడి",
+                returnHome: "హోమ్ పేజీకి తిరిగి వెళ్లండి",
+                
+                // My Reports Page
+                myReportsTitle: "నా నివేదికలు",
+                noReports: "ఇంకా నివేదికలు సమర్పించబడలేదు.",
+                date: "తేదీ",
+                status: "స్థితి",
+                
+                // Rewards Page
+                rewardsTitle: "మీ రివార్డ్లు",
+                currentLevel: "ప్రస్తుత స్థాయి",
+                points: "పాయింట్లు",
+                nextLevel: "తదుపరి స్థాయి",
+                badgesEarned: "సాధించిన బ్యాడ్జీలు",
+                firstReport: "మొదటి నివేదిక",
+                fiveReports: "5 నివేదికలు",
+                
+                // Profile Page
+                profileTitle: "వినియోగదారు ప్రొఫైల్",
+                name: "పేరు",
+                email: "ఇమెయిల్",
+                phone: "ఫోన్ నంబర్",
+                
+                // Settings Page
+                settingsTitle: "సెట్టింగ్లు",
+                language: "భాష",
+                chooseLanguage: "భాష ఎంచుకోండి",
+                notifications: "నోటిఫికేషన్లు",
+                enableNotifications: "నోటిఫికేషన్లను ప్రారంభించండి",
+                appearance: "దృశ్యం",
+                darkMode: "డార్క్ మోడ్"
+            },
+            hi: {
+                // Login Page
+                loginTitle: "क्लीन कनेक्ट",
+                loginSubtitle: "अपने खाते में लॉगिन करें",
+                email: "ईमेल",
+                enterEmail: "अपना ईमेल दर्ज करें",
+                password: "पासवर्ड",
+                enterPassword: "अपना पासवर्ड दर्ज करें",
+                login: "लॉगिन",
+                noAccount: "खाता नहीं है?",
+                createAccount: "नया खाता बनाएं",
+                invalidCredentials: "अमान्य ईमेल या पासवर्ड",
+                
+                // Register Page
+                registerTitle: "नया खाता बनाएं",
+                firstName: "पहला नाम",
+                enterFirstName: "अपना पहला नाम दर्ज करें",
+                lastName: "अंतिम नाम",
+                enterLastName: "अपना अंतिम नाम दर्ज करें",
+                confirmPassword: "पासवर्ड की पुष्टि करें",
+                confirmPasswordPlaceholder: "अपने पासवर्ड की पुष्टि करें",
+                phone: "फोन नंबर",
+                enterPhone: "अपना फोन नंबर दर्ज करें",
+                submit: "जमा करें",
+                haveAccount: "पहले से ही एक खाता है?",
+                loginLink: "लॉगिन",
+                passwordsMatch: "पासवर्ड मेल खाते हैं!",
+                passwordsNotMatch: "पासवर्ड मेल नहीं खाते",
+                invalidPhone: "कृपया एक मान्य 10-अंकीय फोन नंबर दर्ज करें",
+                userExists: "इस ईमेल के साथ उपयोगकर्ता पहले से मौजूद है",
+                accountCreated: "खाता सफलतापूर्वक बनाया गया! लॉगिन पर पुनर्निर्देशित किया जा रहा है...",
+                
+                // Home Page
+                homeTitle: "क्लीन कनेक्ट में आपका स्वागत है",
+                homeSubtitle: "आरंभ करने के लिए नेविगेशन मेनू से एक विकल्प चुनें।",
+                issuesRegistered: "पंजीकृत मुद्दे",
+                inProgress: "प्रगति पर",
+                issuesSolved: "हल किए गए मुद्दे",
+                
+                // Navigation
+                home: "होम",
+                reportIssue: "मुद्दा रिपोर्ट करें",
+                myReports: "मेरी रिपोर्ट",
+                rewards: "पुरस्कार",
+                profile: "प्रोफाइल",
+                settings: "सेटिंग्स",
+                logout: "लॉगआउट",
+                
+                // Report Page
+                reportTitle: "एक मुद्दा रिपोर्ट करें",
+                uploadPhoto: "समस्या फोटो अपलोड करें",
+                openCamera: "कैमरा खोलें",
+                chooseFile: "फ़ाइल चुनें",
+                description: "विवरण",
+                describeIssue: "मुद्दे का वर्णन करें",
+                recordVoice: "आवाज विवरण रिकॉर्ड करें",
+                stopRecording: "रिकॉर्डिंग रोकें",
+                location: "स्थान",
+                detectLocation: "स्वचालित रूप से स्थान का पता लगाएं",
+                submitIssue: "मुद्दा जमा करें",
+                descriptionRequired: "विवरण आवश्यक है",
+                locationRequired: "स्थान आवश्यक है",
+                photoPreview: "फोटो पूर्वावलोकन",
+                audioPreview: "ऑडियो पूर्वावलोकन",
+                detectingLocation: "आपका स्थान पता लगाया जा रहा है...",
+                locationDetected: "स्थान सफलतापूर्वक पता चला!",
+                locationFailed: "स्थान पता लगाने में विफल। कृपया मैन्युअल रूप से दर्ज करें।",
+                locationPermission: "स्वचालित रूप से पता लगाने के लिए कृपया स्थान पहुंच की अनुमति दें",
+                
+                // Thank You Page
+                thankYou: "रिपोर्ट करने के लिए धन्यवाद!",
+                issueRegistered: "आपका मुद्दा सफलतापूर्वक पंजीकृत कर लिया गया है। हमारी टीम इसे जल्द ही देखेगी।",
+                quote: "हर रिपोर्ट एक बेहतर दुनिया की ओर एक कदम है।",
+                referenceId: "संदर्भ आईडी",
+                returnHome: "होम पेज पर वापस जाएं",
+                
+                // My Reports Page
+                myReportsTitle: "मेरी रिपोर्ट",
+                noReports: "अभी तक कोई रिपोर्ट सबमिट नहीं की गई है।",
+                date: "तारीख",
+                status: "स्थिति",
+                
+                // Rewards Page
+                rewardsTitle: "आपके पुरस्कार",
+                currentLevel: "वर्तमान स्तर",
+                points: "अंक",
+                nextLevel: "अगला स्तर",
+                badgesEarned: "अर्जित बैज",
+                firstReport: "पहली रिपोर्ट",
+                fiveReports: "5 रिपोर्ट",
+                
+                // Profile Page
+                profileTitle: "उपयोगकर्ता प्रोफाइल",
+                name: "नाम",
+                email: "ईमेल",
+                phone: "फोन नंबर",
+                
+                // Settings Page
+                settingsTitle: "सेटिंग्स",
+                language: "भाषा",
+                chooseLanguage: "भाषा चुनें",
+                notifications: "सूचनाएं",
+                enableNotifications: "सूचनाएं सक्षम करें",
+                appearance: "उपस्थिति",
+                darkMode: "डार्क मोड"
+            }
+        };
+
+        // Authentication Context
+        const AuthContext = React.createContext();
+
+        // Main App Component
+        function CleanConnectApp() {
+            const [currentUser, setCurrentUser] = React.useState(null);
+            const [currentPage, setCurrentPage] = React.useState('login');
+            const [theme, setTheme] = React.useState('light-theme');
+            const [userLocation, setUserLocation] = React.useState('');
+            const [language, setLanguage] = React.useState('en');
+
+            // Set body theme class
+            React.useEffect(() => {
+                document.body.className = theme;
+            }, [theme]);
+
+            // Check if user is logged in on app start - REMOVED AUTO-LOGIN
+            React.useEffect(() => {
+                const savedLanguage = localStorage.getItem('cleanConnectLanguage');
+                const savedTheme = localStorage.getItem('cleanConnectTheme');
+                
+                // Always start with login page, don't auto-login
+                setCurrentPage('login');
+                
+                if (savedLanguage) {
+                    setLanguage(savedLanguage);
+                }
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                }
+            }, []);
+
+            // Login function
+            const login = (user) => {
+                setCurrentUser(user);
+                localStorage.setItem('cleanConnectUser', JSON.stringify(user));
+                setCurrentPage('home');
+                
+                // Detect user location
+                detectUserLocation();
+            };
+
+            // Logout function
+            const logout = () => {
+                setCurrentUser(null);
+                localStorage.removeItem('cleanConnectUser');
+                setCurrentPage('login');
+            };
+
+            // Improved location detection function
+            const detectUserLocation = () => {
+                if (!navigator.geolocation) {
+                    setUserLocation('Geolocation not supported by this browser');
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        try {
+                            // Try to get location using a free geocoding service
+                            const response = await fetch(
+                                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+                            );
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                const locationString = `${data.city || data.locality}, ${data.principalSubdivision || data.region}, ${data.countryName}`;
+                                setUserLocation(locationString);
+                            } else {
+                                // Fallback to coordinates
+                                setUserLocation(`Latitude: ${latitude.toFixed(4)}, Longitude: ${longitude.toFixed(4)}`);
+                            }
+                        } catch (error) {
+                            // Final fallback - use coordinates
+                            setUserLocation(`Latitude: ${latitude.toFixed(4)}, Longitude: ${longitude.toFixed(4)}`);
+                        }
+                    },
+                    (error) => {
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                setUserLocation('Location access denied by user');
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                setUserLocation('Location information unavailable');
+                                break;
+                            case error.TIMEOUT:
+                                setUserLocation('Location request timed out');
+                                break;
+                            default:
+                                setUserLocation('An unknown error occurred');
+                                break;
+                        }
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            };
+
+            // Change theme
+            const changeTheme = (newTheme) => {
+                setTheme(newTheme);
+                localStorage.setItem('cleanConnectTheme', newTheme);
+            };
+
+            // Change language
+            const changeLanguage = (newLanguage) => {
+                setLanguage(newLanguage);
+                localStorage.setItem('cleanConnectLanguage', newLanguage);
+            };
+
+            // Auth context value
+            const authContextValue = {
+                currentUser,
+                login,
+                logout,
+                currentPage,
+                setCurrentPage,
+                userLocation,
+                theme,
+                changeTheme,
+                language,
+                changeLanguage
+            };
+
+            return (
+                <AuthContext.Provider value={authContextValue}>
+                    <div className="app">
+                        {currentUser && (
+                            <TopNavigation />
+                        )}
+                        
+                        <div className="container">
+                            <div className="page-content">
+                                {currentUser ? (
+                                    <>
+                                        {currentPage === 'home' && <HomePage />}
+                                        {currentPage === 'report' && <ReportPage />}
+                                        {currentPage === 'reports' && <MyReportsPage />}
+                                        {currentPage === 'rewards' && <RewardsPage />}
+                                        {currentPage === 'profile' && <ProfilePage />}
+                                        {currentPage === 'settings' && <SettingsPage />}
+                                        {currentPage === 'thankyou' && <ThankYouPage />}
+                                    </>
+                                ) : (
+                                    <>
+                                        {currentPage === 'login' && <LoginPage />}
+                                        {currentPage === 'register' && <RegisterPage />}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </AuthContext.Provider>
+            );
+        }
+
+        // Top Navigation Component
+        function TopNavigation() {
+            const { currentUser, logout, currentPage, setCurrentPage, language } = React.useContext(AuthContext);
+            const t = translations[language];
+    
+            const navItems = [
+                { id: 'home', label: t.home, icon: 'fas fa-home' },
+                { id: 'report', label: t.reportIssue, icon: 'fas fa-exclamation-circle' },
+                { id: 'reports', label: t.myReports, icon: 'fas fa-chart-bar' },
+                { id: 'rewards', label: t.rewards, icon: 'fas fa-award' },
+                { id: 'profile', label: t.profile, icon: 'fas fa-user' },
+                { id: 'settings', label: t.settings, icon: 'fas fa-cog' }
+            ];
+
+            return (
+                <nav className="top-nav">
+                    <div className="nav-items">
+                        {navItems.map(item => (
+                            <div 
+                                key={item.id}
+                                className={`nav-item ${currentPage === item.id ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(item.id)}
+                            >
+                                <i className={item.icon}></i>
+                                <span>{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="user-info">
+                        <div className="user-avatar">
+                            {currentUser.firstName.charAt(0)}
+                        </div>
+                        <button onClick={logout} className="logout-btn">
+                            <i className="fas fa-sign-out-alt"></i> {t.logout}
+                        </button>
+                    </div>
+                </nav>
+            );
+        }
+
+        // Login Page Component
+        function LoginPage() {
+            const { login, setCurrentPage, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const [email, setEmail] = React.useState('');
+            const [password, setPassword] = React.useState('');
+            const [error, setError] = React.useState('');
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                // Get users from localStorage
+                const users = JSON.parse(localStorage.getItem('cleanConnectUsers')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    login(user);
+                } else {
+                    setError(t.invalidCredentials);
+                }
+            };
+            
+            return (
+                <div className="card">
+                    <h1>{t.loginTitle}</h1>
+                    <h2>{t.loginSubtitle}</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email">{t.email}</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder={t.enterEmail} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">{t.password}</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder={t.enterPassword} 
+                                required 
+                            />
+                        </div>
+                        <button type="submit">{t.login}</button>
+                        {error && <div className="error-message" style={{display: 'block'}}>{error}</div>}
+                    </form>
+                    <p style={{textAlign: 'center', marginTop: '20px'}}>
+                        {t.noAccount} <a href="#" onClick={() => setCurrentPage('register')}>{t.createAccount}</a>
+                    </p>
+                </div>
+            );
+        }
+
+        // Register Page Component
+        function RegisterPage() {
+            const { setCurrentPage, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const [formData, setFormData] = React.useState({
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                phone: ''
+            });
+            const [errors, setErrors] = React.useState({});
+            const [success, setSuccess] = React.useState('');
+            
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.id]: e.target.value
+                });
+                
+                // Clear errors when user types
+                if (errors[e.target.id]) {
+                    setErrors({
+                        ...errors,
+                        [e.target.id]: ''
+                    });
+                }
+            };
+            
+            const validateForm = () => {
+                const newErrors = {};
+                
+                if (formData.password !== formData.confirmPassword) {
+                    newErrors.confirmPassword = t.passwordsNotMatch;
+                }
+                
+                if (!/^[0-9]{10}$/.test(formData.phone)) {
+                    newErrors.phone = t.invalidPhone;
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Get existing users
+                    const users = JSON.parse(localStorage.getItem('cleanConnectUsers')) || [];
+                    
+                    // Check if user already exists
+                    if (users.find(u => u.email === formData.email)) {
+                        setErrors({ email: t.userExists });
+                        return;
+                    }
+                    
+                    // Create new user
+                    const newUser = {
+                        id: Date.now(),
+                        ...formData,
+                        issues: [],
+                        xp: 50,
+                        level: 1,
+                        joinDate: new Date().toLocaleDateString()
+                    };
+                    
+                    // Save user
+                    users.push(newUser);
+                    localStorage.setItem('cleanConnectUsers', JSON.stringify(users));
+                    
+                    setSuccess(t.accountCreated);
+                    
+                    // Redirect to login after a delay
+                    setTimeout(() => {
+                        setCurrentPage('login');
+                    }, 1500);
+                }
+            };
+            
+            return (
+                <div className="card">
+                    <h2>{t.registerTitle}</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="firstName">{t.firstName}</label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                value={formData.firstName}
+                                onChange={handleChange}
+                                placeholder={t.enterFirstName} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="lastName">{t.lastName}</label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                value={formData.lastName}
+                                onChange={handleChange}
+                                placeholder={t.enterLastName} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="email">{t.email}</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder={t.enterEmail} 
+                                required 
+                            />
+                            {errors.email && <div className="error-message" style={{display: 'block'}}>{errors.email}</div>}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">{t.password}</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder={t.enterPassword} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword">{t.confirmPassword}</label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder={t.confirmPasswordPlaceholder} 
+                                required 
+                            />
+                            {errors.confirmPassword && <div className="error-message" style={{display: 'block'}}>{errors.confirmPassword}</div>}
+                            {!errors.confirmPassword && formData.confirmPassword && formData.password === formData.confirmPassword && (
+                                <div className="success-message" style={{display: 'block'}}>{t.passwordsMatch}</div>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="phone">{t.phone}</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder={t.enterPhone} 
+                                required 
+                                pattern="[0-9]{10}"
+                            />
+                            {errors.phone && <div className="phone-error" style={{display: 'block'}}>{errors.phone}</div>}
+                        </div>
+                        <button type="submit">{t.submit}</button>
+                        {success && <div className="success-message" style={{display: 'block'}}>{success}</div>}
+                    </form>
+                    <p style={{textAlign: 'center', marginTop: '20px'}}>
+                        {t.haveAccount} <a href="#" onClick={() => setCurrentPage('login')}>{t.loginLink}</a>
+                    </p>
+                </div>
+            );
+        }
+
+        // Home Page Component
+        function HomePage() {
+            const { currentUser, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const issuesRegistered = currentUser.issues.length;
+            const issuesInProgress = currentUser.issues.filter(issue => issue.status === 'in-progress').length;
+            const issuesSolved = currentUser.issues.filter(issue => issue.status === 'solved').length;
+            
+            return (
+                <div className="card">
+                    <h2>{t.homeTitle}</h2>
+                    <p style={{textAlign: 'center', marginBottom: '20px'}}>
+                        {t.homeSubtitle}
+                    </p>
+                    
+                    <div className="progress-stats">
+                        <div className="stat-box">
+                            <h4>{t.issuesRegistered}</h4>
+                            <p>{issuesRegistered}</p>
+                        </div>
+                        <div className="stat-box">
+                            <h4>{t.inProgress}</h4>
+                            <p>{issuesInProgress}</p>
+                        </div>
+                        <div className="stat-box">
+                            <h4>{t.issuesSolved}</h4>
+                            <p>{issuesSolved}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Report Page Component
+        function ReportPage() {
+            const { currentUser, setCurrentPage, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const [formData, setFormData] = React.useState({
+                description: '',
+                location: '',
+                phone: currentUser.phone
+            });
+            const [errors, setErrors] = React.useState({});
+            const [isRecording, setIsRecording] = React.useState(false);
+            const [recordingTime, setRecordingTime] = React.useState(0);
+            const [imagePreview, setImagePreview] = React.useState('');
+            const [audioPreview, setAudioPreview] = React.useState('');
+            const [mediaRecorder, setMediaRecorder] = React.useState(null);
+            const [audioChunks, setAudioChunks] = React.useState([]);
+            const [locationStatus, setLocationStatus] = React.useState('');
+            const [locationStatusType, setLocationStatusType] = React.useState('');
+            
+            React.useEffect(() => {
+                let interval;
+                if (isRecording) {
+                    interval = setInterval(() => {
+                        setRecordingTime(prev => prev + 1);
+                    }, 1000);
+                }
+                return () => clearInterval(interval);
+            }, [isRecording]);
+            
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.id]: e.target.value
+                });
+            };
+            
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        setImagePreview(e.target.result);
+                        document.getElementById('photo-preview-section').classList.add('active');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            const handleCameraCapture = () => {
+                // In a real app, this would access the device camera
+                alert("Camera functionality would be implemented here. For security reasons, this is simulated in the browser.");
+                
+                // Simulate camera capture with a placeholder image
+                setImagePreview('https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Problem+Photo');
+                document.getElementById('photo-preview-section').classList.add('active');
+            };
+            
+            const startRecording = async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const recorder = new MediaRecorder(stream);
+                    const chunks = [];
+                    
+                    recorder.ondataavailable = (e) => {
+                        chunks.push(e.data);
+                    };
+                    
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(blob);
+                        setAudioPreview(audioUrl);
+                        document.getElementById('audio-preview-section').classList.add('active');
+                    };
+                    
+                    setMediaRecorder(recorder);
+                    setAudioChunks(chunks);
+                    recorder.start();
+                    setIsRecording(true);
+                } catch (error) {
+                    alert("Microphone access denied or not available. Using simulated recording.");
+                    // Fallback to simulated recording
+                    setIsRecording(true);
+                }
+            };
+            
+            const stopRecording = () => {
+                if (mediaRecorder) {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+                setIsRecording(false);
+                setRecordingTime(0);
+            };
+            
+            const toggleRecording = () => {
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            };
+            
+            // Improved location detection function
+            const detectLocation = () => {
+                if (!navigator.geolocation) {
+                    setLocationStatus(t.locationFailed);
+                    setLocationStatusType('error');
+                    setFormData({
+                        ...formData,
+                        location: 'Geolocation not supported by this browser'
+                    });
+                    return;
+                }
+
+                setLocationStatus(t.detectingLocation);
+                setLocationStatusType('loading');
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        try {
+                            // Try to get location using a free geocoding service
+                            const response = await fetch(
+                                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=${language}`
+                            );
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                const locationString = `${data.city || data.locality}, ${data.principalSubdivision || data.region}, ${data.countryName}`;
+                                
+                                setFormData({
+                                    ...formData,
+                                    location: locationString
+                                });
+                                
+                                setLocationStatus(t.locationDetected);
+                                setLocationStatusType('success');
+                            } else {
+                                // Fallback to coordinates
+                                const coordLocation = `${t.latitude}: ${latitude.toFixed(4)}, ${t.longitude}: ${longitude.toFixed(4)}`;
+                                setFormData({
+                                    ...formData,
+                                    location: coordLocation
+                                });
+                                
+                                setLocationStatus(t.locationDetected);
+                                setLocationStatusType('success');
+                            }
+                        } catch (error) {
+                            // Final fallback - use coordinates
+                            const coordLocation = `${t.latitude}: ${latitude.toFixed(4)}, ${t.longitude}: ${longitude.toFixed(4)}`;
+                            setFormData({
+                                ...formData,
+                                location: coordLocation
+                            });
+                            
+                            setLocationStatus(t.locationDetected);
+                            setLocationStatusType('success');
+                        }
+                    },
+                    (error) => {
+                        let errorMessage = t.locationFailed;
+                        
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = t.locationPermission;
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = 'Location information unavailable';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = 'Location request timed out';
+                                break;
+                            default:
+                                errorMessage = 'An unknown error occurred';
+                                break;
+                        }
+                        
+                        setLocationStatus(errorMessage);
+                        setLocationStatusType('error');
+                        setFormData({
+                            ...formData,
+                            location: errorMessage
+                        });
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            };
+            
+            const validateForm = () => {
+                const newErrors = {};
+                
+                if (!/^[0-9]{10}$/.test(formData.phone)) {
+                    newErrors.phone = t.invalidPhone;
+                }
+                
+                if (!formData.description.trim()) {
+                    newErrors.description = t.descriptionRequired;
+                }
+                
+                if (!formData.location.trim()) {
+                    newErrors.location = t.locationRequired;
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Create new issue
+                    const newIssue = {
+                        id: Date.now(),
+                        ...formData,
+                        status: 'registered',
+                        date: new Date().toLocaleDateString(),
+                        reference: '@' + Math.floor(100000 + Math.random() * 900000) + '@',
+                        image: imagePreview,
+                        audio: audioPreview
+                    };
+                    
+                    // Update user issues
+                    const updatedUser = {
+                        ...currentUser,
+                        issues: [...currentUser.issues, newIssue],
+                        xp: currentUser.xp + 10
+                    };
+                    
+                    // Update users in localStorage
+                    const users = JSON.parse(localStorage.getItem('cleanConnectUsers')) || [];
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    if (userIndex !== -1) {
+                        users[userIndex] = updatedUser;
+                        localStorage.setItem('cleanConnectUsers', JSON.stringify(users));
+                        localStorage.setItem('cleanConnectUser', JSON.stringify(updatedUser));
+                    }
+                    
+                    // Navigate to thank you page
+                    setCurrentPage('thankyou');
+                }
+            };
+            
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            };
+            
+            return (
+                <div className="card">
+                    <h2>{t.reportTitle}</h2>
+                    
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="problem-photo">{t.uploadPhoto}</label>
+                            <input type="file" id="problem-photo" accept="image/*" style={{display: 'none'}} onChange={handleFileSelect} />
+                            <div className="photo-options">
+                                <div className="photo-btn" onClick={handleCameraCapture}>
+                                    <i className="fas fa-camera"></i> <span>{t.openCamera}</span>
+                                </div>
+                                <div className="photo-btn" onClick={() => document.getElementById('problem-photo').click()}>
+                                    <i className="fas fa-folder-open"></i> <span>{t.chooseFile}</span>
+                                </div>
+                            </div>
+                            
+                            <div id="photo-preview-section" className="preview-section">
+                                <div className="preview-title">{t.photoPreview}</div>
+                                <img src={imagePreview} alt="Preview" className="image-preview" />
+                            </div>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="description">{t.description}</label>
+                            <textarea 
+                                id="description" 
+                                rows="4" 
+                                value={formData.description}
+                                onChange={handleChange}
+                                placeholder={t.describeIssue} 
+                                required 
+                            />
+                            {errors.description && <div className="error-message" style={{display: 'block'}}>{errors.description}</div>}
+                            
+                            <div className="voice-recording">
+                                <button 
+                                    type="button" 
+                                    className={`record-btn ${isRecording ? 'recording' : ''}`}
+                                    onClick={toggleRecording}
+                                >
+                                    <i className={`fas ${isRecording ? 'fa-stop' : 'fa-microphone'}`}></i> 
+                                    <span>{isRecording ? t.stopRecording : t.recordVoice}</span>
+                                </button>
+                                <div className="waveform" style={{display: isRecording ? 'flex' : 'none'}}>
+                                    {[...Array(8)].map((_, i) => (
+                                        <div key={i} className="wave-bar"></div>
+                                    ))}
+                                </div>
+                                <div className="recording-time" style={{display: isRecording ? 'block' : 'none'}}>
+                                    {formatTime(recordingTime)}
+                                </div>
+                                
+                                <div id="audio-preview-section" className="preview-section">
+                                    <div className="preview-title">{t.audioPreview}</div>
+                                    <audio controls src={audioPreview} className="audio-preview"></audio>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="location">{t.location}</label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                value={formData.location}
+                                onChange={handleChange}
+                                placeholder={t.detectingLocation} 
+                                required 
+                            />
+                            {errors.location && <div className="error-message" style={{display: 'block'}}>{errors.location}</div>}
+                            
+                            {locationStatus && (
+                                <div className={`location-status location-${locationStatusType}`}>
+                                    {locationStatus}
+                                </div>
+                            )}
+                            
+                            <button type="button" onClick={detectLocation} style={{marginTop: '10px', backgroundColor: 'var(--secondary-color)'}}>
+                                <i className="fas fa-map-marker-alt"></i> <span>{t.detectLocation}</span>
+                            </button>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="phone">{t.phone}</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder={t.enterPhone} 
+                                required 
+                                pattern="[0-9]{10}"
+                            />
+                            {errors.phone && <div className="phone-error" style={{display: 'block'}}>{errors.phone}</div>}
+                        </div>
+                        
+                        <button type="submit">
+                            <i className="fas fa-paper-plane"></i> <span>{t.submitIssue}</span>
+                        </button>
+                    </form>
+                </div>
+            );
+        }
+
+        // Thank You Page Component
+        function ThankYouPage() {
+            const { setCurrentPage, currentUser, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const latestIssue = currentUser.issues[currentUser.issues.length - 1];
+            
+            return (
+                <div className="card">
+                    <div className="thank-you-message">
+                        <h2>{t.thankYou}</h2>
+                        <p>{t.issueRegistered}</p>
+                        <p style={{marginTop: '10px', fontStyle: 'italic'}}>"{t.quote}"</p>
+                        <div className="reference-id">
+                            {t.referenceId}: <span>{latestIssue?.reference || '@876136@'}</span>
+                        </div>
+                    </div>
+                    <button onClick={() => setCurrentPage('home')}>{t.returnHome}</button>
+                    <div className="footer">
+                        <p>© 2023 CleanConnect - Municipal Issue Reporting System. All rights reserved.</p>
+                    </div>
+                </div>
+            );
+        }
+
+        // My Reports Page Component
+        function MyReportsPage() {
+            const { currentUser, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            return (
+                <div className="card">
+                    <h2>{t.myReportsTitle}</h2>
+                    <div id="reports-list">
+                        {currentUser.issues.length === 0 ? (
+                            <p style={{textAlign: 'center'}}>{t.noReports}</p>
+                        ) : (
+                            currentUser.issues.map(issue => (
+                                <div key={issue.id} style={{
+                                    padding: '15px', 
+                                    margin: '10px 0', 
+                                    border: '1px solid #ddd', 
+                                    borderRadius: 'var(--border-radius)',
+                                    background: 'rgba(255,255,255,0.5)'
+                                }}>
+                                    <h4>{t.referenceId}: {issue.reference}</h4>
+                                    <p><strong>{t.date}:</strong> {issue.date}</p>
+                                    <p><strong>{t.status}:</strong> {issue.status}</p>
+                                    <p><strong>{t.description}:</strong> {issue.description}</p>
+                                    <p><strong>{t.location}:</strong> {issue.location}</p>
+                                    {issue.image && (
+                                        <div>
+                                            <strong>{t.photoPreview}:</strong>
+                                            <img src={issue.image} alt="Issue" style={{maxWidth: '100%', marginTop: '10px', borderRadius: 'var(--border-radius)'}} />
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // Rewards Page Component
+        function RewardsPage() {
+            const { currentUser, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            return (
+                <div className="card">
+                    <h2>{t.rewardsTitle}</h2>
+                    <div className="progress-stats">
+                        <div className="stat-box">
+                            <h4>{t.currentLevel}</h4>
+                            <p>{t.currentLevel} {currentUser.level}</p>
+                        </div>
+                        <div className="stat-box">
+                            <h4>{t.points}</h4>
+                            <p>{currentUser.xp}</p>
+                        </div>
+                        <div className="stat-box">
+                            <h4>{t.nextLevel}</h4>
+                            <p>{currentUser.level * 100} {t.points}</p>
+                        </div>
+                    </div>
+                    
+                    <h3 style={{marginTop: '20px'}}>{t.badgesEarned}</h3>
+                    <div style={{display: 'flex', justifyContent: 'center', margin: '20px 0', flexWrap: 'wrap'}}>
+                        <div style={{textAlign: 'center', margin: '0 15px'}}>
+                            <div style={{
+                                width: '60px', 
+                                height: '60px', 
+                                background: 'linear-gradient(135deg, #FFD700, #FFA500)', 
+                                borderRadius: '50%', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                margin: '0 auto 10px'
+                            }}>
+                                <i className="fas fa-star" style={{fontSize: '24px', color: 'white'}}></i>
+                            </div>
+                            <p>{t.firstReport}</p>
+                        </div>
+                        
+                        {currentUser.issues.length >= 5 && (
+                            <div style={{textAlign: 'center', margin: '0 15px'}}>
+                                <div style={{
+                                    width: '60px', 
+                                    height: '60px', 
+                                    background: 'linear-gradient(135deg, #C0C0C0, #A9A9A9)', 
+                                    borderRadius: '50%', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    margin: '0 auto 10px'
+                                }}>
+                                    <i className="fas fa-trophy" style={{fontSize: '24px', color: 'white'}}></i>
+                                </div>
+                                <p>{t.fiveReports}</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // Profile Page Component
+        function ProfilePage() {
+            const { currentUser, language } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            return (
+                <div className="card">
+                    <h2>{t.profileTitle}</h2>
+                    
+                    <div className="profile-section">
+                        <div className="profile-avatar">
+                            {currentUser.firstName.charAt(0)}
+                        </div>
+                        <div className="profile-info">
+                            <div className="profile-name">
+                                {currentUser.firstName} {currentUser.lastName}
+                            </div>
+                            <div className="profile-detail">
+                                <i className="fas fa-envelope"></i> {currentUser.email}
+                            </div>
+                            <div className="profile-detail">
+                                <i className="fas fa-phone"></i> {currentUser.phone}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Settings Page Component
+        function SettingsPage() {
+            const { language, changeLanguage, theme, changeTheme } = React.useContext(AuthContext);
+            const t = translations[language];
+            
+            const [notifications, setNotifications] = React.useState(true);
+            
+            const languages = [
+                { id: 'en', name: 'English' },
+                { id: 'te', name: 'Telugu' },
+                { id: 'hi', name: 'Hindi' }
+            ];
+            
+            return (
+                <div className="card">
+                    <h2>{t.settingsTitle}</h2>
+                    
+                    <h3>{t.language}</h3>
+                    <div className="form-group">
+                        <label htmlFor="language-select">{t.chooseLanguage}</label>
+                        <div className="language-selector">
+                            {languages.map(lang => (
+                                <div 
+                                    key={lang.id}
+                                    className={`language-option ${language === lang.id ? 'active' : ''}`}
+                                    onClick={() => changeLanguage(lang.id)}
+                                >
+                                    {lang.name}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <h3>{t.appearance}</h3>
+                    <div className="form-group">
+                        <div className="theme-toggle">
+                            <span className="toggle-label">{t.darkMode}</span>
+                            <label className="toggle-switch">
+                                <input 
+                                    type="checkbox" 
+                                    checked={theme === 'dark-theme'}
+                                    onChange={() => changeTheme(theme === 'dark-theme' ? 'light-theme' : 'dark-theme')}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <h3>{t.notifications}</h3>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '15px 0'}}>
+                        <span>{t.enableNotifications}</span>
+                        <label className="toggle-switch">
+                            <input 
+                                type="checkbox" 
+                                checked={notifications}
+                                onChange={() => setNotifications(!notifications)}
+                            />
+                            <span className="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the app
+        ReactDOM.render(<CleanConnectApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
